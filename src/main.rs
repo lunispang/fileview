@@ -31,7 +31,7 @@ fn main() -> io::Result<()> {
             'q' => { break; },
             'w' => { selected = (selected + length - 1) % length},
             'd' => { selected = (selected + 1) % length},
-            'e' => { dir = enter_dir(dir, selected); selected = 0; },
+            'e' => { dir = enter_dir(dir, &mut selected)},
             'a' => { dir = parent_dir(dir); selected = 0; }, 
             's' => { dir = search_dir(dir); selected = 0; },
             _ => { continue; }
@@ -52,13 +52,14 @@ fn clear_screen(title: Option<&str>) -> io::Result<()> {
     Ok(())
 }
 
-fn enter_dir(current_dir: PathBuf, selected: usize) -> PathBuf {
+fn enter_dir(current_dir: PathBuf, selected: &mut usize) -> PathBuf {
     let mut dir = read_dir(current_dir.clone()).unwrap();
-    let new_dir = dir.nth(selected);
+    let new_dir = dir.nth(*selected);
     if let Some(ok_dir) = new_dir {
         let ok_dir = ok_dir.unwrap();
         if ok_dir.path().is_dir() {
-           return ok_dir.path();
+            *selected = 0;
+            return ok_dir.path();
         }
     }
     return current_dir;
