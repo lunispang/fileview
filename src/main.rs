@@ -75,7 +75,7 @@ fn parent_dir(current_dir: PathBuf) -> PathBuf {
 fn search_dir(current_dir: PathBuf) -> PathBuf {
     let dir = read_dir(current_dir.clone()).unwrap();
     let mut search_term = String::new();
-    io::stdin().read_line(&mut search_term);
+    io::stdin().read_line(&mut search_term).unwrap();
     for obj in dir {
         let obj = obj.unwrap();
         if obj.path().is_dir() {
