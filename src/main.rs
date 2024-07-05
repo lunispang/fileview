@@ -76,14 +76,18 @@ fn search_dir(current_dir: PathBuf) -> PathBuf {
     let dir = read_dir(current_dir.clone()).unwrap();
     let mut search_term = String::new();
     io::stdin().read_line(&mut search_term).unwrap();
+    search_term.pop();
     for obj in dir {
         let obj = obj.unwrap();
         if obj.path().is_dir() {
-            if obj.path().to_string_lossy().contains(&search_term) {
+            let filename = obj.file_name().into_string().unwrap();
+            let filename = filename.as_str();
+            if filename.contains(&search_term.as_str()) {
                 return obj.path();
             }
         }
     }
+                
     return current_dir;
 }
 
