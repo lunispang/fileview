@@ -84,7 +84,7 @@ fn search_dir(current_dir: PathBuf) -> PathBuf {
         if obj.path().is_dir() {
             let filename = obj.file_name().into_string().unwrap();
             let filename = filename.as_str();
-            if filename.contains(&search_term.as_str()) {
+            if filename.starts_with(&search_term.as_str()) {
                 return obj.path();
             }
         }
