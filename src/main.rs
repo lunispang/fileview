@@ -7,7 +7,7 @@ use crossterm::{
 };
 
 use console::Term;
-use arboard::Clipboard;
+use cli_clipboard::{ClipboardContext, ClipboardProvider};
 
 use std::{
     io,
@@ -23,9 +23,9 @@ fn main() -> io::Result<()> {
     let term = Term::stdout();
     let mut selected: usize = 0;
     let mut dir = std::env::current_dir()?;
-    let mut clipboard = Clipboard::new().unwrap();
+    let mut clipboard = ClipboardContext::new().unwrap();
     loop {
-        let title: &str = &dir.to_string_lossy().clone();
+        let title: &str = &dir.to_string_lossy();
         clear_screen(Some(&title))?;
         let length = show_list(&dir, selected)?;
         command_char = term.read_char()?;
@@ -36,10 +36,10 @@ fn main() -> io::Result<()> {
             'e' | 'l' => { dir = enter_dir(dir, &mut selected)},
             'a' | 'h' => { dir = parent_dir(dir); selected = 0; }, 
             's' | '/' => { dir = search_dir(dir); selected = 0; },
-            'c' | 'y' => { clipboard.set_text(dir.to_string_lossy().clone()).unwrap(); },
+            'c' | 'y' => { clipboard.set_contents(dir.to_string_lossy().into()).unwrap(); },
             _ => { continue; }
-        }    
-    }
+        }
+    }       
     Ok(())
 }
 
