@@ -29,11 +29,11 @@ fn main() -> io::Result<()> {
         command_char = term.read_char()?;
         match command_char {
             'q' => { break; },
-            'w' => { selected = (selected + length - 1) % length},
-            'd' => { selected = (selected + 1) % length},
-            'e' => { dir = enter_dir(dir, &mut selected)},
-            'a' => { dir = parent_dir(dir); selected = 0; }, 
-            's' => { dir = search_dir(dir); selected = 0; },
+            'w' | 'k' => { selected = (selected + length - 1) % length},
+            'd' | 'j' => { selected = (selected + 1) % length},
+            'e' | 'l' => { dir = enter_dir(dir, &mut selected)},
+            'a' | 'h' => { dir = parent_dir(dir); selected = 0; }, 
+            's' | '/' => { dir = search_dir(dir); selected = 0; },
             _ => { continue; }
         }    
     }
@@ -95,21 +95,21 @@ fn search_dir(current_dir: PathBuf) -> PathBuf {
 
 fn show_list(current_dir: &Path, selected: usize) -> std::io::Result<usize> {
     let list = read_dir(current_dir)?;
+    let mut len = 0;
     let mut stdout = io::stdout();
-    let mut length = 0;
-    for (index, item) in list.enumerate() {
+    for (index, item) in list.enumerate().skip(match selected {10.. => selected - 10, _ => 0}) {
         let item = item?;
         let mut name: String = item.file_name().into_string().unwrap();
         if item.path().is_dir() {
             name.push('/');
         }
-        let mut stylizedname = name.clone().white();
+        let mut stylizedname = name.white();
         if index == selected {
             stylizedname = stylizedname.red();
         }
         stdout.execute(Print(stylizedname))?;
         stdout.execute(Print("\n"))?;
-        length += 1;
+        len = index + 1;
     }
-    Ok(length)
+    Ok(len)
 }
