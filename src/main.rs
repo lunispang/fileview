@@ -37,6 +37,13 @@ fn main() -> io::Result<()> {
             'a' | 'h' => { dir = parent_dir(dir); selected = 0; }, 
             's' | '/' => { dir = search_dir(dir); selected = 0; },
             'c' | 'y' => { clipboard.set_contents(dir.to_string_lossy().into()).unwrap(); },
+            'v' | 'p' => { 
+                let contents: PathBuf = clipboard
+                    .get_contents()
+                    .unwrap()
+                    .into(); 
+                dir = contents.clone();
+            }
             _ => { continue; }
         }
     }       
