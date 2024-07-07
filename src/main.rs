@@ -7,6 +7,7 @@ use crossterm::{
 };
 
 use console::Term;
+use arbiard::Clipboard;
 
 use std::{
     io,
