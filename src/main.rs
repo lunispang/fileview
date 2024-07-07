@@ -43,6 +43,12 @@ fn main() -> io::Result<()> {
     Ok(())
 }
 
+fn get_selected_name(dir: PathBuf, selected: usize) -> String {
+    let mut dir = read_dir(dir).unwrap();
+    let new = dir.nth(selected).unwrap().unwrap();
+    new.path().to_str().unwrap().to_string()
+}
+
 fn clear_screen(title: Option<&str>) -> io::Result<()> {
     io::stdout()
        .execute(Clear(ClearType::All))?
