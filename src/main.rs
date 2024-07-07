@@ -113,7 +113,7 @@ fn show_list(current_dir: &Path, selected: usize) -> std::io::Result<usize> {
     let list = read_dir(current_dir)?;
     let mut len = 0;
     let mut stdout = io::stdout();
-    for (index, item) in list.enumerate().skip(match selected {10.. => selected - 10, _ => 0}) {
+    for (index, item) in list.enumerate().skip(match selected {10.. => selected - 10, _ => 0}).take(40) {
         let item = item?;
         let mut name: String = item.file_name().into_string().unwrap();
         if item.path().is_dir() {
