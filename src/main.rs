@@ -23,6 +23,7 @@ fn main() -> io::Result<()> {
     let term = Term::stdout();
     let mut selected: usize = 0;
     let mut dir = std::env::current_dir()?;
+    let mut clipboard = Clipboard::new().unwrap();
     loop {
         let title: &str = &dir.to_string_lossy().clone();
         clear_screen(Some(&title))?;
@@ -35,6 +36,7 @@ fn main() -> io::Result<()> {
             'e' | 'l' => { dir = enter_dir(dir, &mut selected)},
             'a' | 'h' => { dir = parent_dir(dir); selected = 0; }, 
             's' | '/' => { dir = search_dir(dir); selected = 0; },
+            'c' | 'y' => { clipboard.set_text(dir.to_string_lossy().clone()).unwrap(); },
             _ => { continue; }
         }    
     }
